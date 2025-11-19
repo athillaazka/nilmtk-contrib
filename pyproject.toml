@@ -11,7 +11,7 @@ version = "0.1.2"
 description = "State-of-the-art algorithms for energy disaggregation using NILMTK’s Rapid Experimentation API"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-requires-python = "==3.11.11"
+requires-python = "==3.8.20"
 authors = [
   { name = "NILMTK-contrib developers" }
 ]
@@ -52,4 +52,5 @@ dev-dependencies = [
   "black>=23.0.0",
   "ruff>=0.0.280"
 ]
+
 
