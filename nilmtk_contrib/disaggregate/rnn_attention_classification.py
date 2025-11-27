@@ -173,6 +173,8 @@ class RNN_attention_classification(Disaggregator):
         self.batch_size = params.get('batch_size',512)
         self.appliance_params = params.get('appliance_params',{})
         self.mains_params=params.get('mains_params',{})
+        self.train_loss_history = {}
+        self.val_loss_history = {}
         if self.sequence_length%2==0:
             print ("Sequence length should be odd!")
             raise (SequenceLengthError)
@@ -211,6 +213,8 @@ class RNN_attention_classification(Disaggregator):
             if appliance_name not in self.models:
                 print("First model training for ", appliance_name)
                 self.models[appliance_name],self.att_models[appliance_name] = self.return_network()
+                self.train_loss_history[appliance_name] = []
+                self.val_loss_history[appliance_name] = []
             else:
                 print("Started Retraining model for ", appliance_name)
 
@@ -233,6 +237,9 @@ class RNN_attention_classification(Disaggregator):
                     appliance_train_classification=train_class_y[:,self.sequence_length:]
                     appliance_val_classification=v_class_y[:,self.sequence_length:]
                     history=model.fit(train_x,[train_y,appliance_train_classification],validation_data=(v_x,[v_y,appliance_val_classification]),epochs=self.n_epochs,callbacks=[checkpoint],batch_size=self.batch_size)
+                    if appliance_name in self.train_loss_history:
+                        self.train_loss_history[appliance_name].extend(history.history['loss'])
+                        self.val_loss_history[appliance_name].extend(history.history['val_loss'])
                     model.load_weights(filepath)
 
     def disaggregate_chunk(self,test_main_list,model=None,do_preprocessing=True):
