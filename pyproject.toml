@@ -28,7 +28,7 @@ classifiers = [
 ]
 dependencies = [
   "tensorflow-io-gcs-filesystem==0.31.0",
-  "nilmtk @ git+https://github.com/nilmtk/nilmtk.git",
+  "nilmtk @ git+https://github.com/athillaazka/nilmtk.git",
   "tensorflow>=2.12.0,<2.16.0",
   "cvxpy>=1.0.0", 
   "torch>=2.0,<2.7",
@@ -52,5 +52,6 @@ dev-dependencies = [
   "black>=23.0.0",
   "ruff>=0.0.280"
 ]
+
 
 
