@@ -132,6 +132,7 @@ class RNN_attention_classification(Disaggregator):
 
         self.models: "OrderedDict[str,_RNNAttNet]" = OrderedDict()
         self.best: Dict[str, float] = {}
+        self.history: Dict[str, Dict[str, List[float]]] = {}  # Add history storage
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -212,6 +213,7 @@ class RNN_attention_classification(Disaggregator):
             if app not in self.models:
                 self.models[app] = self._fresh_network()
                 self.best[app] = np.inf
+                self.history[app] = {'train_loss': [], 'val_loss': []} # Initialize history
 
             net = self.models[app]
             optim = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
@@ -249,6 +251,10 @@ class RNN_attention_classification(Disaggregator):
                     f"[{app}] Epoch {ep+1}/{self.n_epochs} | "
                     f"Train Loss: {avg_loss:.4f} | Val Loss: {v_loss:.4f}"
                 )
+                
+                # Store losses
+                self.history[app]['train_loss'].append(avg_loss)
+                self.history[app]['val_loss'].append(v_loss)
 
                 if v_loss < self.best[app]:
                     self.best[app] = v_loss
